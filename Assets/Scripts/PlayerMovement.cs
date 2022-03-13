@@ -6,6 +6,7 @@ public class PlayerMovement : MonoBehaviour
 {
     public CharacterController controller;
     public float speed = 12f;
+    public int sprintingMultiplier = 2;
     public float enduranceTime = 10f;
 
 
@@ -22,6 +23,7 @@ public class PlayerMovement : MonoBehaviour
 
     public bool isGrounded;
     public bool isCrouched;
+    public bool isSprinting;
 
     Rigidbody rb;
 
@@ -35,8 +37,19 @@ public class PlayerMovement : MonoBehaviour
         Movement();
         Crouch();
         Sprint();
+        MyInputs();
     }
 
+    void MyInputs()
+    {
+        if(Input.GetKey(KeyCode.LeftShift))
+        {
+            isSprinting = true;
+        }
+        else{
+            isSprinting = false;
+        }
+    }
     public void Movement()
     {
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
@@ -57,6 +70,7 @@ public class PlayerMovement : MonoBehaviour
         if(Input.GetButtonDown("Jump") && isGrounded)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            enduranceTime -= 2f;
         }
         velocity.y += gravity * Time.deltaTime;
 
@@ -78,14 +92,13 @@ public class PlayerMovement : MonoBehaviour
     }
     void Sprint()
     {
-        if(Input.GetKey(KeyCode.LeftShift) && isGrounded && isCrouched == false && enduranceTime > 0 )
+        if(isSprinting == true && isGrounded == true)
         {
-            speed += 8f;
-            enduranceTime -= Time.deltaTime;
-            
+            speed = 24f;
         }
-        else if ( enduranceTime < 10){
-            enduranceTime += Time.deltaTime;
+        else
+        {
+            speed = 12f;
         }
     }
 }
