@@ -5,7 +5,6 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public CharacterController controller;
-    public float mouseSensitivity = 100f;
     public float speed = 12f;
     public float gravity = -9.8f;
     public float jumpHeight = 3f;
@@ -20,16 +19,10 @@ public class PlayerMovement : MonoBehaviour
 
     private float xInp;
     private float yInp;
-
-    void Start()
-    {
-        Cursor.lockState = CursorLockMode.Locked;
-    }
     void Update()
     {
         myInputs();
         Movement();
-        CamLock();
     }
 
     public void myInputs()
@@ -64,10 +57,5 @@ public class PlayerMovement : MonoBehaviour
         velocity.y += gravity * Time.deltaTime;
 
         controller.Move(velocity * Time.deltaTime);
-    }
-    void CamLock()
-    {
-        cam.transform.position = player.transform.position;
-    }
-   
+    }    
 }

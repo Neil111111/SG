@@ -39,6 +39,7 @@
      <Compile Include="Assets\Scripts\PlayerMovement.cs" />
      <Compile Include="Assets\Scripts\PlayerHealthSystem.cs" />
      <Compile Include="Assets\Scripts\ExperienceSystem.cs" />
+     <Compile Include="Assets\Scripts\MouseLook.cs" />
     <Reference Include="UnityEngine">
         <HintPath>E:\UnityProjects\2020.3.30f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
     </Reference>
