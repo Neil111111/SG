@@ -4,15 +4,23 @@ using UnityEngine;
 
 public class ExperienceSystem : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    private int level;
+    private int experience;
+    private int experienceToNextLevel;
 
-    // Update is called once per frame
-    void Update()
+
+    public ExperienceSystem()
     {
-        
+        level = 0;
+        experience = 0;
+        experienceToNextLevel = 100;
+    }
+    public void AddExperience(int amount)
+    {
+        experience += amount;
+        if(experience >= experienceToNextLevel){
+            level += 1;
+            experience -= experienceToNextLevel;
+        }
     }
 }
