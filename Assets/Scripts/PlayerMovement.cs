@@ -26,6 +26,10 @@ public class PlayerMovement : MonoBehaviour
         yInp = Input.GetAxis("Vertical");
 
     }
+    public void Movement()
+    {
+        
+    }
     public void CameraTransform()
     {
         cam.transform.position = player.transform.position;
