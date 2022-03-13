@@ -16,20 +16,15 @@ public class PlayerMovement : MonoBehaviour
     public LayerMask groundMask;
     public Camera cam;
     public Transform player;
-
-    private float xInp;
-    private float yInp;
+    Rigidbody rb;
+    void Awake()
+    {
+        Rigidbody rb = GetComponent<Rigidbody>();
+    }
     void Update()
     {
-        myInputs();
         Movement();
-    }
-
-    public void myInputs()
-    {
-        xInp = Input.GetAxis("Horizontal");
-        yInp = Input.GetAxis("Vertical");
-
+        Crouch();
     }
     public void Movement()
     {
@@ -39,9 +34,8 @@ public class PlayerMovement : MonoBehaviour
 
         {
             velocity.y = -2f;
-
-
         }
+
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
 
@@ -57,5 +51,16 @@ public class PlayerMovement : MonoBehaviour
         velocity.y += gravity * Time.deltaTime;
 
         controller.Move(velocity * Time.deltaTime);
+    }
+    void Crouch()
+    {
+        if(Input.GetButton("Crouch") && isGrounded == true)
+        {
+            player.transform.localScale = new Vector3 (2.5f,1.25f,2.5f);
+            gravity = -120f;
+        }else if(Input.GetButtonUp("Crouch")){
+            player.transform.localScale = new Vector3 (2.5f,2.5f,2.5f);
+            gravity = -50f;
+        }
     }    
 }
