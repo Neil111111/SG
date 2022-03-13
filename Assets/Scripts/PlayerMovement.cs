@@ -7,6 +7,8 @@ public class PlayerMovement : MonoBehaviour
     public float speed;
     public float maxSpeed;
     public float acceleration;
+    public Camera cam;
+    public Transform player;
 
     private float xInp;
     private float yInp;
@@ -14,14 +16,19 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        myInputs();
+        CameraTransform();
     }
 
-    void myInputs()
+    public void myInputs()
     {
         xInp = Input.GetAxis("Horizontal");
         yInp = Input.GetAxis("Vertical");
-        
+
+    }
+    public void CameraTransform()
+    {
+        cam.transform.position = player.transform.position;
     }
     
 }
