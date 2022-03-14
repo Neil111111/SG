@@ -6,8 +6,10 @@ public class PlayerMovement : MonoBehaviour
 {
     public CharacterController controller;
     public float speed = 12f;
-    public int sprintingMultiplier = 2;
-    public float enduranceTime = 10f;
+    public float maxStamina = 100f;
+    public float playerStamina;
+    public float staminaRegen = 0.5f;
+    public float staminaDrain = 1f;
 
 
     public float gravity = -9.8f;
@@ -24,12 +26,17 @@ public class PlayerMovement : MonoBehaviour
     public bool isGrounded;
     public bool isCrouched;
     public bool isSprinting;
+    public bool hasRegenerated;
 
     Rigidbody rb;
 
     void Awake()
     {
         Rigidbody rb = GetComponent<Rigidbody>();
+    }
+    void Start()
+    {
+        playerStamina = maxStamina;
     }
 
     void Update()
@@ -38,6 +45,8 @@ public class PlayerMovement : MonoBehaviour
         Crouch();
         Sprint();
         MyInputs();
+        Stamina();
+        Sprint();
     }
 
     void MyInputs()
@@ -70,7 +79,6 @@ public class PlayerMovement : MonoBehaviour
         if(Input.GetButtonDown("Jump") && isGrounded)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-            enduranceTime -= 2f;
         }
         velocity.y += gravity * Time.deltaTime;
 
@@ -92,13 +100,32 @@ public class PlayerMovement : MonoBehaviour
     }
     void Sprint()
     {
-        if(isSprinting == true && isGrounded == true)
+        if(hasRegenerated)
         {
-            speed = 24f;
+            if(isSprinting == true && isGrounded == true && playerStamina > 0)
+            {
+                speed = 24f;
+                playerStamina -= staminaDrain * Time.deltaTime;
+            }
+            else
+            {
+                speed = 12f;
+            }
         }
-        else
+    }
+    void Stamina()
+    {
+        if(isSprinting == false)
         {
-            speed = 12f;
+            if(playerStamina <= maxStamina - 0.01f)
+            {
+                playerStamina += staminaRegen * Time.deltaTime;
+
+                if(playerStamina >= maxStamina)
+                {
+                    hasRegenerated = true;
+                }
+            }
         }
     }
 }
