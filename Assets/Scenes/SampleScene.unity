@@ -254,9 +254,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 507688993}
   speed: 12
+  maxStamina: 100
+  playerStamina: 0
+  staminaRegen: 10
+  staminaDrain: 15
   gravity: -50
   jumpHeight: 3
-  isGrounded: 0
   groundCheck: {fileID: 416115236}
   groundDistance: 0.4
   groundMask:
@@ -264,6 +267,11 @@ MonoBehaviour:
     m_Bits: 8
   cam: {fileID: 963194227}
   player: {fileID: 507688985}
+  isGrounded: 0
+  isCrouched: 0
+  isSprinting: 0
+  hasRegenerated: 0
+  isJumping: 0
 --- !u!114 &507688988
 MonoBehaviour:
   m_ObjectHideFlags: 0

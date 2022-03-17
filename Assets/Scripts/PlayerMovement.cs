@@ -23,10 +23,11 @@ public class PlayerMovement : MonoBehaviour
     public Camera cam;
     public Transform player;
 
-    public bool isGrounded;
-    public bool isCrouched;
-    public bool isSprinting;
-    public bool hasRegenerated;
+    [SerializeField]private bool isGrounded;
+    [SerializeField]private bool isCrouched;
+    [SerializeField]private bool isSprinting;
+    [SerializeField]private bool hasRegenerated;
+    [SerializeField]private bool isJumping;
 
     Rigidbody rb;
 
@@ -43,7 +44,6 @@ public class PlayerMovement : MonoBehaviour
     {
         Movement();
         Crouch();
-        Sprint();
         MyInputs();
         Stamina();
         Sprint();
@@ -79,12 +79,13 @@ public class PlayerMovement : MonoBehaviour
         if(Input.GetButtonDown("Jump") && isGrounded)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            playerStamina -= 20f;
+            isJumping = true;
         }
         velocity.y += gravity * Time.deltaTime;
 
         controller.Move(velocity * Time.deltaTime);
     }
-
     void Crouch()
     {
         if(Input.GetButton("Crouch") && isGrounded == true)
@@ -98,26 +99,29 @@ public class PlayerMovement : MonoBehaviour
             isCrouched = false;
         }
     }
+
     void Sprint()
     {
-        if(hasRegenerated)
+        if(isSprinting == true && playerStamina > 0)
         {
-            if(isSprinting == true && isGrounded == true && playerStamina > 0)
-            {
-                speed = 24f;
-                playerStamina -= staminaDrain * Time.deltaTime;
-            }
-            else
-            {
-                speed = 12f;
-            }
+             speed = 24f;
+             playerStamina -= staminaDrain * Time.deltaTime;
         }
+        else
+        {
+             speed = 12f;
+        }
+        
     }
+
     void Stamina()
     {
+        if(playerStamina > maxStamina) playerStamina = maxStamina;
+
+        
         if(isSprinting == false)
         {
-            if(playerStamina <= maxStamina - 0.01f)
+            if(playerStamina <= 99)
             {
                 playerStamina += staminaRegen * Time.deltaTime;
 
@@ -125,7 +129,13 @@ public class PlayerMovement : MonoBehaviour
                 {
                     hasRegenerated = true;
                 }
+                else{
+                    hasRegenerated = false;
+                }
+
+                
             }
         }
+        
     }
 }
