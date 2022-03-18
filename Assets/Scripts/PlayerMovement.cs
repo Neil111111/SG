@@ -6,29 +6,35 @@ public class PlayerMovement : MonoBehaviour
 {
     public CharacterController controller;
     public float speed = 12f;
+
+    //Stamina
     public float maxStamina = 100f;
     public float playerStamina;
     public float staminaRegen = 0.5f;
     public float staminaDrain = 1f;
 
-
+    //Jump
     public float gravity = -9.8f;
     public float jumpHeight = 3f;
     Vector3 velocity;
 
+    private Vector3 crouchScale = new Vector3 (2.5f,1.25f,2.5f);
+    private Vector3 playerScale;
+    //checks
+
     public Transform groundCheck;
     public float groundDistance = 0.4f;
     public LayerMask groundMask;
-
+    //Objects
     public Camera cam;
     public Transform player;
-
+    //Bools
     [SerializeField]private bool isGrounded;
     [SerializeField]private bool isCrouched;
     [SerializeField]private bool isSprinting;
     [SerializeField]private bool hasRegenerated;
     [SerializeField]private bool isJumping;
-
+    //Physics
     Rigidbody rb;
 
     void Awake()
@@ -43,7 +49,6 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         Movement();
-        Crouch();
         MyInputs();
         Stamina();
         Sprint();
@@ -58,6 +63,12 @@ public class PlayerMovement : MonoBehaviour
         else{
             isSprinting = false;
         }
+        
+        //crouching
+        if(Input.GetKeyDown(KeyCode.LeftControl))
+            StartCrouch();
+        if(Input.GetKeyUp(KeyCode.LeftControl))
+            StopCrouch();
     }
     public void Movement()
     {
@@ -76,7 +87,7 @@ public class PlayerMovement : MonoBehaviour
         controller.Move(move * speed * Time.deltaTime);
         
 
-        if(Input.GetButtonDown("Jump") && isGrounded)
+        if(Input.GetButtonDown("Jump") && isGrounded && playerStamina > 9.9f)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
             playerStamina -= 20f;
@@ -86,23 +97,22 @@ public class PlayerMovement : MonoBehaviour
 
         controller.Move(velocity * Time.deltaTime);
     }
-    void Crouch()
+    void StartCrouch()
     {
-        if(Input.GetButton("Crouch") && isGrounded == true)
-        {
-            player.transform.localScale = new Vector3 (2.5f,1.25f,2.5f);
-            gravity = -120f;
-            isCrouched = true;
-        }else if(Input.GetButtonUp("Crouch")){
-            player.transform.localScale = new Vector3 (2.5f,2.5f,2.5f);
-            gravity = -50f;
-            isCrouched = false;
-        }
+        transform.localScale = crouchScale;
+        transform.position = new Vector3(transform.position.x,transform.position.y - 1.25f,transform.position.z);
+        isCrouched = true;
+    }
+    void StopCrouch()
+    {
+        transform.localScale = new Vector3 (2.5f,2.5f,2.5f);
+        transform.position = new Vector3(transform.position.x,transform.position.y + 1.25f,transform.position.z);
+        isCrouched = false;
     }
 
     void Sprint()
     {
-        if(isSprinting == true && playerStamina > 0)
+        if(isSprinting == true && playerStamina > 0 && !isCrouched)
         {
              speed = 24f;
              playerStamina -= staminaDrain * Time.deltaTime;
