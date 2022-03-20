@@ -65,7 +65,7 @@ public class PlayerMovement : MonoBehaviour
         }
         
         //crouching
-        if(Input.GetKeyDown(KeyCode.LeftControl))
+        if(Input.GetKeyDown(KeyCode.LeftControl) && isGrounded)
             StartCrouch();
         if(Input.GetKeyUp(KeyCode.LeftControl))
             StopCrouch();
@@ -87,7 +87,7 @@ public class PlayerMovement : MonoBehaviour
         controller.Move(move * speed * Time.deltaTime);
         
 
-        if(Input.GetButtonDown("Jump") && isGrounded && playerStamina > 9.9f)
+        if(Input.GetButtonDown("Jump") && isGrounded && !isCrouched && playerStamina > 9.9f )
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
             playerStamina -= 20f;
