@@ -20,30 +20,43 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector3 crouchScale = new Vector3 (2.5f,1.25f,2.5f);
     private Vector3 playerScale;
-    //checks
 
+    //Checks
     public Transform groundCheck;
     public float groundDistance = 0.4f;
     public LayerMask groundMask;
+
     //Objects
     public Camera cam;
     public Transform player;
+    public Transform orientation;
+    public Transform hand;
+
     //Bools
     [SerializeField]private bool isGrounded;
     [SerializeField]private bool isCrouched;
     [SerializeField]private bool isSprinting;
     [SerializeField]private bool hasRegenerated;
     [SerializeField]private bool isJumping;
+
+    //Look
+    public float mouseSensitivity = 50f;
+    public float mouseSensitivityMultiplier = 1f;
+    private float xRotation;
     //Physics
     Rigidbody rb;
 
+    //Animations
+    Animator anim;
     void Awake()
     {
         Rigidbody rb = GetComponent<Rigidbody>();
+        Animator anim = GetComponent<Animator>();
     }
     void Start()
     {
         playerStamina = maxStamina;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     void Update()
@@ -52,6 +65,8 @@ public class PlayerMovement : MonoBehaviour
         MyInputs();
         Stamina();
         Sprint();
+        Look();
+        
     }
 
     void MyInputs()
@@ -70,6 +85,7 @@ public class PlayerMovement : MonoBehaviour
         if(Input.GetKeyUp(KeyCode.LeftControl))
             StopCrouch();
     }
+
     public void Movement()
     {
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
@@ -97,12 +113,14 @@ public class PlayerMovement : MonoBehaviour
 
         controller.Move(velocity * Time.deltaTime);
     }
+
     void StartCrouch()
     {
         transform.localScale = crouchScale;
         transform.position = new Vector3(transform.position.x,transform.position.y - 1.25f,transform.position.z);
         isCrouched = true;
     }
+
     void StopCrouch()
     {
         transform.localScale = new Vector3 (2.5f,2.5f,2.5f);
@@ -114,12 +132,12 @@ public class PlayerMovement : MonoBehaviour
     {
         if(isSprinting == true && playerStamina > 0 && !isCrouched)
         {
-             speed = 24f;
-             playerStamina -= staminaDrain * Time.deltaTime;
+            speed = 24f;
+            playerStamina -= staminaDrain * Time.deltaTime;
         }
         else
         {
-             speed = 12f;
+            speed = 12f;
         }
         
     }
@@ -147,5 +165,23 @@ public class PlayerMovement : MonoBehaviour
             }
         }
         
+    }
+    private float desiredX;
+    private void Look()
+    {
+        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.fixedDeltaTime * mouseSensitivityMultiplier;
+        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.fixedDeltaTime * mouseSensitivityMultiplier;
+
+        Vector3 rot = cam.transform.localRotation.eulerAngles;
+        desiredX = rot.y + mouseX;
+
+        xRotation -= mouseY;
+
+        xRotation = Mathf.Clamp(xRotation, - 90f, 90f);
+        cam.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+
+        orientation.transform.localRotation = Quaternion.Euler(0,desiredX, 0);
+        
+        player.Rotate(Vector3.up * mouseX);
     }
 }

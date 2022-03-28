@@ -13,6 +13,7 @@ public class MeleeAttack : MonoBehaviour
 
         anim = GetComponent<Animator>();
         anim.SetBool("isAttacking",false);
+        anim.SetBool("isIdle",true);
         
     }
 
@@ -29,11 +30,13 @@ public class MeleeAttack : MonoBehaviour
         if(Input.GetMouseButtonDown(0) && timer > Cooldown)
         {
             anim.SetBool("isAttacking",true);
+            anim.SetBool("isIdle",false);
             timer = 0;
         }
         if(Input.GetMouseButtonUp(0))
         {
             anim.SetBool("isAttacking",false);
+            anim.SetBool("isIdle",true);
         }
     }
 }
