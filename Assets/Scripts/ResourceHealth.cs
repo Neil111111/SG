@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class ResourceHealth : MonoBehaviour
 {  
-    public float health;
-    public ResourceHealth()
+    public float _resourceHealth;
+
+    public void TakeDamage(float damage)
     {
-        
+        _resourceHealth -= damage;
     }
 }

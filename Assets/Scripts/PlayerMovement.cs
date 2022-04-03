@@ -81,6 +81,7 @@ public class PlayerMovement : MonoBehaviour
         
         //crouching
         if(Input.GetKeyDown(KeyCode.LeftControl) && isGrounded)
+            
             StartCrouch();
         if(Input.GetKeyUp(KeyCode.LeftControl))
             StopCrouch();
@@ -98,7 +99,7 @@ public class PlayerMovement : MonoBehaviour
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
 
-        Vector3 move = transform.right * x + transform.forward * z;
+        Vector3 move = (transform.right * x + transform.forward * z);
 
         controller.Move(move * speed * Time.deltaTime);
         
@@ -107,7 +108,6 @@ public class PlayerMovement : MonoBehaviour
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
             playerStamina -= 20f;
-            isJumping = true;
         }
         velocity.y += gravity * Time.deltaTime;
 
@@ -126,6 +126,7 @@ public class PlayerMovement : MonoBehaviour
         transform.localScale = new Vector3 (2.5f,2.5f,2.5f);
         transform.position = new Vector3(transform.position.x,transform.position.y + 1.25f,transform.position.z);
         isCrouched = false;
+        
     }
 
     void Sprint()
@@ -180,7 +181,7 @@ public class PlayerMovement : MonoBehaviour
         xRotation = Mathf.Clamp(xRotation, - 90f, 90f);
         cam.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
 
-        orientation.transform.localRotation = Quaternion.Euler(0,desiredX, 0);
+        orientation.transform.localRotation = Quaternion.Euler(0,desiredX, 0).normalized;
         
         player.Rotate(Vector3.up * mouseX);
     }
